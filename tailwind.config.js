@@ -3,6 +3,9 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {},
+    // colors: {
+    //   netflixLogoColor: "#d22f27",
+    // },
   },
   plugins: [],
 };
