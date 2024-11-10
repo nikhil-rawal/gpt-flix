@@ -18,7 +18,7 @@ const Home = () => {
       />
       <div className="absolute flex inset-0 items-center justify-center">
         <div className="w-4/12">
-          <SignIn />
+          <Outlet />
         </div>
       </div>
     </div>

@@ -1,12 +1,12 @@
 import React from "react";
-// import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const SignIn = () => {
-  //   const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleSignIn = () => {
     alert("Congrats. Successfully signed-in");
-    // navigate("/dashboard");
+    navigate("/dashboard");
   };
 
   return (
@@ -34,7 +34,10 @@ const SignIn = () => {
       </button>
 
       <p className="my-4">
-        Don't have an account? <strong>Sign Up here!</strong>
+        Don't have an account?{" "}
+        <Link to="/signup">
+          <strong>Sign Up here!</strong>
+        </Link>
       </p>
     </div>
   );

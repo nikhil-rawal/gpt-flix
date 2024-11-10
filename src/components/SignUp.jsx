@@ -39,8 +39,11 @@ const SignUp = () => {
       >
         Sign Up
       </button>
-      <p>
-        Already have an account? <strong>Sign In here!</strong>
+      <p className="my-4">
+        Already have an account?{" "}
+        <Link to="/signin">
+          <strong>Sign In here!</strong>
+        </Link>
       </p>
     </div>
   );
