@@ -1,7 +1,5 @@
 import React from "react";
 // import { Outlet } from "react-router-dom";
-// import SignIn from "../components/SignIn";
-// import SignUp from "../components/SignUp";
 import AuthForm from "../components/AuthForm";
 
 const Home = () => {
@@ -19,7 +17,6 @@ const Home = () => {
       />
       <div className="absolute flex inset-0 items-center justify-center">
         <div className="w-4/12">
-          {/* <Outlet /> */}
           <AuthForm />
         </div>
       </div>

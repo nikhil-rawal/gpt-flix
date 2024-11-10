@@ -1,21 +1,26 @@
 import React, { useState, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+// import { Link, useNavigate } from "react-router-dom";
+import { checkValidate } from "../utils/validate";
+import ErrorMessageComponent from "./ErrorMessageComponent";
 
 const AuthForm = () => {
   const [isSignIn, setIsSignIn] = useState(true);
-  const navigateTo = useNavigate();
-  //   const firstName = useRef(null);
-  //   const lastName = useRef(null);
-  const email = useRef(null);
-  const password = useRef(null);
+  const [errorMessage, setErrorMessage] = useState({});
+  //   const navigateTo = useNavigate();
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
 
   const toggleIsSignIn = () => {
     setIsSignIn(!isSignIn);
   };
 
   const handleBtnClick = () => {
-    console.log(email.current.value);
-    console.log(password.current.value);
+    const validationResult = checkValidate(
+      emailRef.current.value,
+      passwordRef.current.value
+    );
+    setErrorMessage(validationResult || {});
+    console.log(errorMessage);
   };
 
   return (
@@ -44,17 +49,32 @@ const AuthForm = () => {
           </>
         )}
         <input
-          ref={email}
+          ref={emailRef}
           type="text"
           placeholder="Email"
-          className="w-8/12 h-14 rounded-md bg-black/10 border-[#60605f] border px-3 my-4 focus:border-white focus:border-2 outline-none focus:placeholder:text-xs focus:placeholder:pl-1 placeholder:text-lg"
+          className={`w-8/12 h-14 rounded-md bg-black/10 border px-3 my-4 focus:border-white ${
+            errorMessage.emailError
+              ? "focus:border-[#d22f27] border-[#d22f27] border-2"
+              : "focus:border-white border-[#60605f]"
+          } focus:border-2 outline-none focus:placeholder:text-xs focus:placeholder:pl-1 placeholder:text-lg`}
         />
+        {errorMessage.emailError && (
+          <ErrorMessageComponent message={errorMessage.emailError} />
+        )}
+
         <input
-          ref={password}
+          ref={passwordRef}
           type="password"
           placeholder={isSignIn ? "Password" : "Choose a password"}
-          className="w-8/12 h-14 rounded-md bg-black/10 border-[#60605f] border px-3 my-4 focus:border-white focus:border-2 outline-none focus:placeholder:text-xs focus:placeholder:pl-1 placeholder:text-lg"
+          className={`w-8/12 h-14 rounded-md bg-black/10 border px-3 my-4 focus:border-white ${
+            errorMessage.passwordError
+              ? "focus:border-[#d22f27] border-[#d22f27] border-2"
+              : "focus:border-white border-[#60605f]"
+          } focus:border-2 outline-none focus:placeholder:text-xs focus:placeholder:pl-1 placeholder:text-lg`}
         />
+        {errorMessage.passwordError && (
+          <ErrorMessageComponent message={errorMessage.passwordError} />
+        )}
 
         <button
           onClick={handleBtnClick}
