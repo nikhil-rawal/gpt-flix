@@ -1,7 +1,7 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
-import SignIn from "../components/SignIn";
-import SignUp from "../components/SignUp";
+// import { Outlet } from "react-router-dom";
+// import SignIn from "../components/SignIn";
+// import SignUp from "../components/SignUp";
 import AuthForm from "../components/AuthForm";
 
 const Home = () => {
