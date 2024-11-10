@@ -9,36 +9,49 @@ const SignIn = () => {
     navigate("/dashboard");
   };
 
+  const resetFields = () => {};
+
   return (
-    <div className="bg-black/60 text-white flex flex-col justify-center items-center p-4 rounded-md">
-      <h1 className="text-white text-4xl text-left my-4 font-semibold w-8/12">
-        Sign In
-      </h1>
+    <div className="bg-black/60 text-white  p-4 rounded-md">
+      <form className="flex flex-col justify-center items-center">
+        <h1 className="text-white text-4xl text-left my-4 font-semibold w-8/12">
+          Sign In
+        </h1>
 
-      <input
-        placeholder="Email or mobile number"
-        className="w-8/12 h-14 rounded-md bg-black/10 border-[#60605f] border px-3 my-4 focus:border-white focus:border-2 outline-none focus:placeholder:text-xs focus:placeholder:pl-1 placeholder:text-lg"
-      />
+        <input
+          placeholder="Email or mobile number"
+          className="w-8/12 h-14 rounded-md bg-black/10 border-[#60605f] border px-3 my-4 focus:border-white focus:border-2 outline-none focus:placeholder:text-xs focus:placeholder:pl-1 placeholder:text-lg"
+        />
 
-      <input
-        type="password"
-        placeholder="Password"
-        className="w-8/12 h-14 rounded-md bg-black/10 border-[#60605f] border px-3 my-4 focus:border-white focus:border-2 outline-none focus:placeholder:text-xs focus:placeholder:pl-1 placeholder:text-lg"
-      />
+        <input
+          type="password"
+          placeholder="Password"
+          className="w-8/12 h-14 rounded-md bg-black/10 border-[#60605f] border px-3 my-4 focus:border-white focus:border-2 outline-none focus:placeholder:text-xs focus:placeholder:pl-1 placeholder:text-lg"
+        />
 
-      <button
-        onClick={handleSignIn}
-        className="bg-[#d22f27] text-white my-4 w-8/12 h-10 rounded-md text-xl"
-      >
-        Sign In
-      </button>
+        <button
+          onClick={handleSignIn}
+          type="submit"
+          className="bg-[#d22f27] text-white my-4 w-8/12 h-10 rounded-md text-xl hover:contrast-125"
+        >
+          Sign In
+        </button>
 
-      <p className="my-4">
-        Don't have an account?{" "}
-        <Link to="/signup">
-          <strong>Sign Up here!</strong>
-        </Link>
-      </p>
+        {/* <button
+          // onClick={resetFields}
+          type="reset"
+          className="bg-black/50 text-white my-4 w-7/12 h-10 rounded-md text-xl hover:contrast-125"
+        >
+          Reset
+        </button> */}
+
+        <p className="my-4">
+          Don't have an account?{" "}
+          <Link to="/signup">
+            <strong>Sign Up here!</strong>
+          </Link>
+        </p>
+      </form>
     </div>
   );
 };
