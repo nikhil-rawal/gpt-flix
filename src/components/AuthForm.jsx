@@ -2,10 +2,16 @@ import React, { useState, useRef } from "react";
 // import { Link, useNavigate } from "react-router-dom";
 import { checkValidate } from "../utils/validate";
 import ErrorMessageComponent from "./ErrorMessageComponent";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "../utils/firebase";
 
 const AuthForm = () => {
   const [isSignIn, setIsSignIn] = useState(true);
   const [errorMessage, setErrorMessage] = useState({});
+  const [authError, setAuthError] = useState("");
   //   const navigateTo = useNavigate();
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
@@ -20,8 +26,54 @@ const AuthForm = () => {
       passwordRef.current.value
     );
     setErrorMessage(validationResult || {});
-    console.log(errorMessage);
+
+    if (validationResult) return;
+
+    if (!isSignIn) {
+      //signup logic
+      createUserWithEmailAndPassword(
+        auth,
+        emailRef.current.value,
+        passwordRef.current.value
+      )
+        .then((userCredential) => {
+          // Signed up
+          const signedUpUser = userCredential.user;
+          console.log(signedUpUser);
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setAuthError(errorCode + "-" + errorMessage);
+          console.log(authError);
+
+          // ..
+        });
+    } else {
+      //signin logic
+      signInWithEmailAndPassword(
+        auth,
+        emailRef.current.value,
+        passwordRef.current.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const signedInUser = userCredential.user;
+          console.log(signedInUser);
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setAuthError(errorCode + "-" + errorMessage);
+          console.log(authError);
+        });
+    }
   };
+
+  console.log(authError);
+  // auth/invalid-credential-Firebase: Error (auth/invalid-credential).
 
   return (
     <div className="bg-black/60 text-white  p-4 rounded-md">
