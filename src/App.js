@@ -1,6 +1,8 @@
 import Home from "./pages/Home";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Provider } from "react-redux";
 import Dashboard from "./pages/Dashboard";
+import appStore from "./utils/appStore";
 
 const myRouter = createBrowserRouter([
   {
@@ -13,7 +15,11 @@ const myRouter = createBrowserRouter([
   },
 ]);
 function App() {
-  return <RouterProvider router={myRouter} />;
+  return (
+    <Provider store={appStore}>
+      <RouterProvider router={myRouter} />;
+    </Provider>
+  );
 }
 
 export default App;
