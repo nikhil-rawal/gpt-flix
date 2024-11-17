@@ -15,6 +15,8 @@ const AuthForm = () => {
   //   const navigateTo = useNavigate();
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
+  const firstNameRef = useRef(null);
+  const lastNameRef = useRef(null);
 
   const toggleIsSignIn = () => {
     setIsSignIn(!isSignIn);
@@ -87,13 +89,13 @@ const AuthForm = () => {
         {!isSignIn && (
           <>
             <input
-              //   ref={firstName}
+              ref={firstNameRef}
               type="text"
               className="w-8/12 h-14 rounded-md bg-black/10 border-[#60605f] border px-3 my-4 focus:border-white focus:border-2 outline-none focus:placeholder:text-xs focus:placeholder:pl-1 placeholder:text-lg"
               placeholder="First name"
             />
             <input
-              //   ref={lastName}
+              ref={lastNameRef}
               type="text"
               className="w-8/12 h-14 rounded-md bg-black/10 border-[#60605f] border px-3 my-4 focus:border-white focus:border-2 outline-none focus:placeholder:text-xs focus:placeholder:pl-1 placeholder:text-lg"
               placeholder="Last name"
