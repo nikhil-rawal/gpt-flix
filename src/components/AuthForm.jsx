@@ -46,7 +46,6 @@ const AuthForm = () => {
             displayName:
               firstNameRef.current.value + " " + lastNameRef.current.value,
             photoURL: "https://example.com/jane-q-user/profile.jpg",
-            // user name and photo can be edited
           })
             .then(() => {
               navigateTo("/dashboard");

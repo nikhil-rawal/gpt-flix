@@ -1,14 +1,16 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { removeUser } from "../utils/userSlice";
 import { useNavigate } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
+  const storedUser = useSelector((state) => state.userSliceReducer);
   const navigateTo = useNavigate();
   const auth = getAuth();
 
+  console.log("user from store", storedUser);
   const handleSignOut = () => {
     signOut(auth)
       .then(() => {
@@ -24,7 +26,10 @@ const Dashboard = () => {
     <div>
       <h1>Welcome. You are successfully signed-in.</h1>
       <br />
-      <button onClick={handleSignOut}>Logout</button>
+      <div>
+        <img src={storedUser.photoURL} alt="User dp" className="w-20 h-20" />
+        <button onClick={handleSignOut}>Logout</button>
+      </div>
     </div>
   );
 };
