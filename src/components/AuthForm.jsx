@@ -42,25 +42,24 @@ const AuthForm = () => {
       )
         .then((userCredential) => {
           const signedUpUser = userCredential.user;
-          // console.log("1", signedUpUser);
           updateProfile(signedUpUser, {
             displayName:
               firstNameRef.current.value + " " + lastNameRef.current.value,
             photoURL: "https://example.com/jane-q-user/profile.jpg",
+            // user name and photo can be edited
           })
             .then(() => {
-              // console.log("2", signedUpUser);
               navigateTo("/dashboard");
             })
-            .catch((error) => {});
+            .catch((error) => {
+              error && console.log(error);
+            });
         })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
           setAuthError(errorCode + "-" + errorMessage);
-          console.log(authError);
-
-          // ..
+          authError && console.log(authError);
         });
     } else {
       //signin logic
@@ -72,11 +71,8 @@ const AuthForm = () => {
         .then((userCredential) => {
           // Signed in
           const signedInUser = userCredential.user;
-
           console.log(signedInUser);
           navigateTo("/dashboard");
-
-          // ...
         })
         .catch((error) => {
           const errorCode = error.code;
