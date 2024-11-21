@@ -1,5 +1,4 @@
 import React, { useState, useRef } from "react";
-// import { Link, useNavigate } from "react-router-dom";
 import { checkValidate } from "../utils/validate";
 import ErrorMessageComponent from "./ErrorMessageComponent";
 import {
@@ -18,7 +17,6 @@ const AuthForm = () => {
   const [isSignIn, setIsSignIn] = useState(true);
   const [errorMessage, setErrorMessage] = useState({});
   const [authError, setAuthError] = useState("");
-  //   const navigateTo = useNavigate();
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const firstNameRef = useRef(null);
@@ -74,14 +72,12 @@ const AuthForm = () => {
           authError && console.log(authError);
         });
     } else {
-      //signin logic
       signInWithEmailAndPassword(
         auth,
         emailRef.current.value,
         passwordRef.current.value
       )
         .then((userCredential) => {
-          // Signed in
           const signedInUser = userCredential.user;
           console.log(signedInUser);
           navigateTo("/dashboard");

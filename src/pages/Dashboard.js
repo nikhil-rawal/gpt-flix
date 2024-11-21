@@ -9,17 +9,14 @@ const Dashboard = () => {
   const storedUser = useSelector((state) => state.userSliceReducer);
   const navigateTo = useNavigate();
   const auth = getAuth();
-
   console.log("user from store", storedUser);
   const handleSignOut = () => {
     signOut(auth)
       .then(() => {
         dispatch(removeUser());
         navigateTo("/");
-        // Sign-out successful.
       })
       .catch((error) => {
-        // An error happened.
         error && console.log(error);
       });
   };
