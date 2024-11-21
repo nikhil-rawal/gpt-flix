@@ -9,9 +9,12 @@ import {
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
 
 const AuthForm = () => {
   const navigateTo = useNavigate();
+  const dispatch = useDispatch();
   const [isSignIn, setIsSignIn] = useState(true);
   const [errorMessage, setErrorMessage] = useState({});
   const [authError, setAuthError] = useState("");
@@ -45,9 +48,19 @@ const AuthForm = () => {
           updateProfile(signedUpUser, {
             displayName:
               firstNameRef.current.value + " " + lastNameRef.current.value,
-            photoURL: "https://example.com/jane-q-user/profile.jpg",
+            photoURL: "https://avatars.githubusercontent.com/u/59576734?v=4",
           })
             .then(() => {
+              const { uid, displayName, email, photoURL } = auth.currentUser;
+              dispatch(
+                addUser({
+                  uid: uid,
+                  displayName: displayName,
+                  email: email,
+                  photoURL: photoURL,
+                })
+              );
+              alert("Congrats");
               navigateTo("/dashboard");
             })
             .catch((error) => {

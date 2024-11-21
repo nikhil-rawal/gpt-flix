@@ -22,7 +22,7 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         const { uid, displayName, email, photoURL } = user;
         dispatch(
@@ -43,6 +43,8 @@ function App() {
         dispatch(removeUser());
       }
     });
+
+    return () => unsubscribe();
   }, [dispatch]);
 
   return <RouterProvider router={myRouter} />;
