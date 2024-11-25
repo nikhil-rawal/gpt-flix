@@ -7,12 +7,10 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
-import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 
 const AuthForm = () => {
-  const navigateTo = useNavigate();
   const dispatch = useDispatch();
   const [isSignIn, setIsSignIn] = useState(true);
   const [errorMessage, setErrorMessage] = useState({});
@@ -58,8 +56,8 @@ const AuthForm = () => {
                   photoURL: photoURL,
                 })
               );
-              alert("Congrats");
-              navigateTo("/dashboard");
+              alert("Congrats on signup");
+              // navigateTo("/dashboard");
             })
             .catch((error) => {
               error && console.log(error);
@@ -79,8 +77,9 @@ const AuthForm = () => {
       )
         .then((userCredential) => {
           const signedInUser = userCredential.user;
+          alert("Congrats on signin");
           console.log(signedInUser);
-          navigateTo("/dashboard");
+          // navigateTo("/dashboard");
         })
         .catch((error) => {
           const errorCode = error.code;

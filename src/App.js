@@ -1,5 +1,9 @@
 import Home from "./pages/Home";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  useNavigate,
+} from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Dashboard from "./pages/Dashboard";
 import { onAuthStateChanged } from "firebase/auth";
@@ -20,6 +24,7 @@ const myRouter = createBrowserRouter([
 
 function App() {
   const dispatch = useDispatch();
+  const navigateTo = useNavigate();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -33,13 +38,15 @@ function App() {
             photoURL: photoURL,
           })
         );
+        navigateTo("/dashboard");
       } else {
         dispatch(removeUser());
+        navigateTo("/");
       }
     });
 
     return () => unsubscribe();
-  }, [dispatch]);
+  }, [dispatch, navigateTo]);
 
   return <RouterProvider router={myRouter} />;
 }

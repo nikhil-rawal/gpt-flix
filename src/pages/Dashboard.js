@@ -13,8 +13,7 @@ const Dashboard = () => {
   const handleSignOut = () => {
     signOut(auth)
       .then(() => {
-        dispatch(removeUser());
-        navigateTo("/");
+        // dispatch(removeUser());
       })
       .catch((error) => {
         error && console.log(error);
