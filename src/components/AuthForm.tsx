@@ -1,5 +1,6 @@
 export default function AuthForm() {
   return (
+    // This is for new branch
     <div className="flex flex-col justify-center items-center rounded-md  bg-opacity-60 bg-black m-4 p-10">
       <header>
         <h1 className="text-4xl font-bold text-left mb-[28px]">Sign In</h1>
