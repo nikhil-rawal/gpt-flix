@@ -4,4 +4,4 @@
 
 #Steps
 
-- create-next-app : add tailwind by default
+- create-next-app : tailwind added by default
