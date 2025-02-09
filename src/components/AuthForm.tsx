@@ -1,9 +1,9 @@
 export default function AuthForm() {
   return (
     // This is for new branch
-    <div className="flex flex-col justify-center items-center rounded-md  bg-opacity-60 bg-black m-4 p-10">
+    <div className="flex flex-col justify-center rounded-sm  bg-opacity-60 bg-black m-4 p-10">
       <header>
-        <h1 className="text-4xl font-bold text-left mb-[28px]">Sign In</h1>
+        <h1 className="text-white text-4xl font-bold mb-[28px]">Sign In</h1>
       </header>
       <form className="flex flex-col items-center justify-center w-full h-full">
         <input type="text" placeholder="Email" className="m-2 w-80" />
@@ -20,7 +20,8 @@ export default function AuthForm() {
   );
 }
 
-<div className="flex">
+{
+  /* <div className="flex">
   <div className="inline-flex align-text-top">
     <label className="text-[0.75rem] text-[rgba(255,_255,_255,_0.7)] left-4 leading-normal right-4 top-2">
       Email
@@ -43,4 +44,5 @@ export default function AuthForm() {
       />
     </div>
   </div>
-</div>;
+</div>; */
+}
