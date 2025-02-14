@@ -7,7 +7,8 @@ import {
 } from "@/utils/AuthValidations";
 import { useState } from "react";
 import { RxCrossCircled } from "react-icons/rx";
-// import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/utils/Firebase";
 
 export default function AuthForm() {
   //check isSignin form state
@@ -69,11 +70,27 @@ export default function AuthForm() {
 
     //if no error found, console.log(email,password)
     const hasErrors = Object.values(allErrors).some((error) => error !== "");
-
     if (!hasErrors) {
       console.log(
         `All inputs are valid for ${fullName}, ${email}, ${password}`
       );
+    }
+
+    // if signup form, then signup
+    if (!hasErrors && !isSignin) {
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Signed up
+          const user = userCredential.user;
+          console.log("User Details: " + user);
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log("Errors: " + errorCode, errorMessage);
+          // ..
+        });
     }
   };
 
