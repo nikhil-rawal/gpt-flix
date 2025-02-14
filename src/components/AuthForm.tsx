@@ -1,6 +1,13 @@
 "use client";
+import {
+  checkConfirmPasswordError,
+  checkEmailRegex,
+  checkFullNameError,
+  checkPasswordRegex,
+} from "@/utils/AuthValidations";
 import { useState } from "react";
 import { RxCrossCircled } from "react-icons/rx";
+// import { createUserWithEmailAndPassword } from "firebase/auth";
 
 export default function AuthForm() {
   //check isSignin form state
@@ -13,32 +20,12 @@ export default function AuthForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   //fullName, email, password, confirmPassword ERROR states
-  const [fullNameError, setFullNameError] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [confirmPasswordError, setConfirmPasswordError] = useState("");
-
-  //email and password REGEX patterns
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-
-  //validate fullName, email, password,confirmPassword using Regex
-  const checkFullNameError = (fullName: string) => {
-    return fullName.length < 2 ? "Please enter a valid name !" : "";
-  };
-  const checkEmailRegex = (email: string) => {
-    if (!emailRegex.test(email)) return "Please enter a valid email !";
-    return "";
-  };
-  const checkPasswordRegex = (password: string) => {
-    if (!passwordRegex.test(password)) return "Please enter a valid password !";
-    return "";
-  };
-  const checkConfirmPasswordError = (confirmPassword: string) => {
-    if (!confirmPassword) return "Please confirm your password!";
-    if (confirmPassword !== password) return "Passwords do not match !";
-    return "";
-  };
+  const [allErrors, setAllErrors] = useState({
+    fullNameError: "",
+    emailError: "",
+    passwordError: "",
+    confirmPasswordError: "",
+  });
 
   //form submission
   const handleAuthFormSubmit = (e: React.FormEvent) => {
@@ -46,28 +33,47 @@ export default function AuthForm() {
     e.preventDefault();
 
     //input validations
-    const isFullNameValid = checkFullNameError(fullName);
-    const isEmailValid = checkEmailRegex(email);
-    const isPasswordValid = checkPasswordRegex(password);
-    const isConfirmPasswordValid = checkConfirmPasswordError(confirmPassword);
+    const hasFullNameError = checkFullNameError(fullName);
+    const hasEmailError = checkEmailRegex(email);
+    const hasPasswordError = checkPasswordRegex(password);
+    const hasConfirmPasswordError = checkConfirmPasswordError(
+      password,
+      confirmPassword
+    );
 
     //if there is an error, set the error message
-    if (isFullNameValid) {
-      setFullNameError(isFullNameValid);
+    if (hasFullNameError) {
+      setAllErrors((prevState) => ({
+        ...prevState,
+        fullNameError: hasFullNameError,
+      }));
     }
-    if (isEmailValid) {
-      setEmailError(isEmailValid);
+    if (hasEmailError) {
+      setAllErrors((prevState) => ({
+        ...prevState,
+        emailError: hasEmailError,
+      }));
     }
-    if (isPasswordValid) {
-      setPasswordError(isPasswordValid);
+    if (hasPasswordError) {
+      setAllErrors((prevState) => ({
+        ...prevState,
+        passwordError: hasPasswordError,
+      }));
     }
-    if (isConfirmPasswordValid) {
-      setConfirmPasswordError(isConfirmPasswordValid);
+    if (hasConfirmPasswordError) {
+      setAllErrors((prevState) => ({
+        ...prevState,
+        confirmPasswordError: hasConfirmPasswordError,
+      }));
     }
 
     //if no error found, console.log(email,password)
-    if (!isEmailValid && !isPasswordValid) {
-      console.log(`email: ${email}, password: ${password}`);
+    const hasErrors = Object.values(allErrors).some((error) => error !== "");
+
+    if (!hasErrors) {
+      console.log(
+        `All inputs are valid for ${fullName}, ${email}, ${password}`
+      );
     }
   };
 
@@ -91,16 +97,22 @@ export default function AuthForm() {
               placeholder="Full Name"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              onBlur={() => setFullNameError(checkFullNameError(fullName))}
+              onBlur={() =>
+                setAllErrors((prevState) => ({
+                  ...prevState,
+                  fullNameError: checkFullNameError(fullName),
+                }))
+              }
               className={`w-80 h-14 bg-transparent border-2 py-2 px-4 transition-all ease-in-out focus:placeholder:text-white focus:placeholder:text-[13px] focus:placeholder: rounded-md text-white outline-none ring-0 active:outline-none active:ring-0 border-[#606060] focus:border-white ${
-                fullNameError && "border-[#e50914]"
+                allErrors?.fullNameError && "border-[#e50914]"
               }`}
             />
-            {fullNameError ? (
+            {allErrors?.fullNameError ? (
               <p
                 className={`text-netflixRed flex items-center text-md my-0 max-w-80 `}
               >
-                <RxCrossCircled className="font-bold" /> &nbsp;{fullNameError}
+                <RxCrossCircled className="font-bold" /> &nbsp;
+                {allErrors?.fullNameError}
               </p>
             ) : (
               <>&nbsp;</>
@@ -115,16 +127,22 @@ export default function AuthForm() {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            onBlur={() => setEmailError(checkEmailRegex(email))}
+            onBlur={() =>
+              setAllErrors((prevState) => ({
+                ...prevState,
+                emailError: checkEmailRegex(email),
+              }))
+            }
             className={`w-80 h-14 bg-transparent border-2 py-2 px-4 transition-all ease-in-out focus:placeholder:text-white focus:placeholder:text-[13px] focus:placeholder: rounded-md text-white outline-none ring-0 active:outline-none active:ring-0 border-[#606060] focus:border-white ${
-              emailError && "border-[#e50914]"
+              allErrors?.emailError && "border-[#e50914]"
             }`}
           />
-          {emailError ? (
+          {allErrors?.emailError ? (
             <p
               className={`text-netflixRed flex items-center text-md my-0 max-w-80`}
             >
-              <RxCrossCircled className="font-bold" /> &nbsp;{emailError}
+              <RxCrossCircled className="font-bold" /> &nbsp;
+              {allErrors?.emailError}
             </p>
           ) : (
             <>&nbsp;</>
@@ -138,16 +156,22 @@ export default function AuthForm() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            onBlur={() => setPasswordError(checkPasswordRegex(password))}
+            onBlur={() =>
+              setAllErrors((prevState) => ({
+                ...prevState,
+                passwordErrorError: checkPasswordRegex(password),
+              }))
+            }
             className={`w-80 h-14 bg-transparent border-2 py-2 px-4 placeholder:text-[#bababa] rounded-md text-white outline-none ring-0 active:outline-none active:ring-0 border-[#606060] focus:border-white ${
-              passwordError && "border-[#e50914] "
+              allErrors?.passwordError && "border-[#e50914] "
             }`}
           />
-          {passwordError ? (
+          {allErrors?.passwordError ? (
             <p
               className={`text-netflixRed flex items-center text-md my-0 max-w-80`}
             >
-              <RxCrossCircled className="font-bold" /> &nbsp;{passwordError}
+              <RxCrossCircled className="font-bold" /> &nbsp;
+              {allErrors?.passwordError}
             </p>
           ) : (
             <>&nbsp;</>
@@ -163,20 +187,24 @@ export default function AuthForm() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               onBlur={() =>
-                setConfirmPasswordError(
-                  checkConfirmPasswordError(confirmPassword)
-                )
+                setAllErrors((prevState) => ({
+                  ...prevState,
+                  confirmPasswordError: checkConfirmPasswordError(
+                    password,
+                    confirmPassword
+                  ),
+                }))
               }
               className={`w-80 h-14 bg-transparent border-2 py-2 px-4 placeholder:text-[#bababa] rounded-md text-white outline-none ring-0 active:outline-none active:ring-0 border-[#606060] focus:border-white ${
-                confirmPasswordError && "border-[#e50914] "
+                allErrors?.confirmPasswordError && "border-[#e50914] "
               }`}
             />
-            {confirmPasswordError ? (
+            {allErrors?.confirmPasswordError ? (
               <p
                 className={`text-netflixRed flex items-center text-md my-0 max-w-80`}
               >
                 <RxCrossCircled className="font-bold" /> &nbsp;
-                {confirmPasswordError}
+                {allErrors?.confirmPasswordError}
               </p>
             ) : (
               <>&nbsp;</>
