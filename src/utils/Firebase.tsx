@@ -8,14 +8,24 @@ import { getAuth } from "firebase/auth";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// const firebaseConfig = {
+//   apiKey: "AIzaSyCp4CDM-6qcf3WliNJ24ysicRyXSbjVh_g",
+//   authDomain: "gpt-flix-nikhil-rawal.firebaseapp.com",
+//   projectId: "gpt-flix-nikhil-rawal",
+//   storageBucket: "gpt-flix-nikhil-rawal.firebasestorage.app",
+//   messagingSenderId: "429929120349",
+//   appId: "1:429929120349:web:391a8229a331b3f73583b4",
+//   measurementId: "G-EBC9PJC3RS",
+// };
+
 const firebaseConfig = {
-  apiKey: "AIzaSyCp4CDM-6qcf3WliNJ24ysicRyXSbjVh_g",
-  authDomain: "gpt-flix-nikhil-rawal.firebaseapp.com",
-  projectId: "gpt-flix-nikhil-rawal",
-  storageBucket: "gpt-flix-nikhil-rawal.firebasestorage.app",
-  messagingSenderId: "429929120349",
-  appId: "1:429929120349:web:391a8229a331b3f73583b4",
-  measurementId: "G-EBC9PJC3RS",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
 // Initialize Firebase
