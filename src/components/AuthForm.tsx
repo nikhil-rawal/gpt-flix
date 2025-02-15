@@ -151,39 +151,6 @@ export default function AuthForm() {
             }
             inputError={allErrors?.fullNameError}
           />
-          // <div className="flex flex-col my-[6px]">
-          //   <input
-          //     type="text"
-          //     placeholder="Full Name"
-          //     value={fullName}
-          //     onChange={(e) => {
-          //       setFullName(e.target.value);
-          //       setErrorsInState(
-          //         "fullNameError",
-          //         checkFullNameError(e.target.value)
-          //       );
-          //     }}
-          //     onBlur={() =>
-          //       setAllErrors((prevState) => ({
-          //         ...prevState,
-          //         fullNameError: checkFullNameError(fullName),
-          //       }))
-          //     }
-          //     className={`w-80 h-14 bg-transparent border-2 py-2 px-4 transition-all ease-in-out focus:placeholder:text-white focus:placeholder:text-[13px] focus:placeholder: rounded-md text-white outline-none ring-0 active:outline-none active:ring-0 border-[#606060] focus:border-white ${
-          //       allErrors?.fullNameError && "border-[#e50914]"
-          //     }`}
-          //   />
-          //   {allErrors?.fullNameError ? (
-          //     <p
-          //       className={`text-netflixRed flex items-center text-md my-0 max-w-80 `}
-          //     >
-          //       <RxCrossCircled className="font-bold" /> &nbsp;
-          //       {allErrors?.fullNameError}
-          //     </p>
-          //   ) : (
-          //     <>&nbsp;</>
-          //   )}
-          // </div>
         )}
 
         {/* email input */}
@@ -203,36 +170,6 @@ export default function AuthForm() {
           }
           inputError={allErrors?.emailError}
         />
-        {/* <div className="flex flex-col my-[6px]">
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              setErrorsInState("emailError", checkEmailRegex(e.target.value));
-            }}
-            onBlur={() =>
-              setAllErrors((prevState) => ({
-                ...prevState,
-                emailError: checkEmailRegex(email),
-              }))
-            }
-            className={`w-80 h-14 bg-transparent border-2 py-2 px-4 transition-all ease-in-out focus:placeholder:text-white focus:placeholder:text-[13px] focus:placeholder: rounded-md text-white outline-none ring-0 active:outline-none active:ring-0 border-[#606060] focus:border-white ${
-              allErrors?.emailError && "border-[#e50914]"
-            }`}
-          />
-          {allErrors?.emailError ? (
-            <p
-              className={`text-netflixRed flex items-center text-md my-0 max-w-80`}
-            >
-              <RxCrossCircled className="font-bold" /> &nbsp;
-              {allErrors?.emailError}
-            </p>
-          ) : (
-            <>&nbsp;</>
-          )}
-        </div> */}
 
         {/* password input */}
         <HomeInput
@@ -254,40 +191,6 @@ export default function AuthForm() {
           }
           inputError={allErrors?.passwordError}
         />
-        {/* <div className="flex flex-col my-[6px] ">
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            // onChange={(e) => setPassword(e.target.value)}
-            onChange={(e) => {
-              setPassword(e.target.value);
-              setErrorsInState(
-                "passwordError",
-                checkPasswordRegex(e.target.value)
-              );
-            }}
-            onBlur={() =>
-              setAllErrors((prevState) => ({
-                ...prevState,
-                passwordError: checkPasswordRegex(password),
-              }))
-            }
-            className={`w-80 h-14 bg-transparent border-2 py-2 px-4 transition-all ease-in-out focus:placeholder:text-white focus:placeholder:text-[13px] focus:placeholder: rounded-md text-white outline-none ring-0 active:outline-none active:ring-0 border-[#606060] focus:border-white ${
-              allErrors?.passwordError && "border-[#e50914] "
-            }`}
-          />
-          {allErrors?.passwordError ? (
-            <p
-              className={`text-netflixRed flex items-center text-md my-0 max-w-80`}
-            >
-              <RxCrossCircled className="font-bold" /> &nbsp;
-              {allErrors?.passwordError}
-            </p>
-          ) : (
-            <>&nbsp;</>
-          )}
-        </div> */}
 
         {/* if signUp form, confirm password input */}
         {!isSignin && (
@@ -313,43 +216,6 @@ export default function AuthForm() {
             }
             inputError={allErrors?.confirmPasswordError}
           />
-          // <div className="flex flex-col my-[6px] ">
-          //   <input
-          //     type="password"
-          //     placeholder="Confirm Password"
-          //     value={confirmPassword}
-          //     // onChange={(e) => setConfirmPassword(e.target.value)}
-          //     onChange={(e) => {
-          //       setConfirmPassword(e.target.value);
-          //       setErrorsInState(
-          //         "confirmPasswordError",
-          //         checkConfirmPasswordError(password, e.target.value)
-          //       );
-          //     }}
-          //     onBlur={() =>
-          //       setAllErrors((prevState) => ({
-          //         ...prevState,
-          //         confirmPasswordError: checkConfirmPasswordError(
-          //           password,
-          //           confirmPassword
-          //         ),
-          //       }))
-          //     }
-          //     className={`w-80 h-14 bg-transparent border-2 py-2 px-4 transition-all ease-in-out focus:placeholder:text-white focus:placeholder:text-[13px] focus:placeholder: rounded-md text-white outline-none ring-0 active:outline-none active:ring-0 border-[#606060] focus:border-white ${
-          //       allErrors?.confirmPasswordError && "border-[#e50914] "
-          //     }`}
-          //   />
-          //   {allErrors?.confirmPasswordError ? (
-          //     <p
-          //       className={`text-netflixRed flex items-center text-md my-0 max-w-80`}
-          //     >
-          //       <RxCrossCircled className="font-bold" /> &nbsp;
-          //       {allErrors?.confirmPasswordError}
-          //     </p>
-          //   ) : (
-          //     <>&nbsp;</>
-          //   )}
-          // </div>
         )}
 
         {/* submit button */}
