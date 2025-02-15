@@ -7,7 +7,10 @@ import {
 } from "@/utils/AuthValidations";
 import { useState } from "react";
 import { RxCrossCircled } from "react-icons/rx";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { auth } from "@/utils/Firebase";
 
 export default function AuthForm() {
@@ -28,6 +31,17 @@ export default function AuthForm() {
     confirmPasswordError: "",
   });
 
+  //setting error messages in state
+  const setErrorsInState = (
+    field: keyof typeof allErrors,
+    errorMessage: string
+  ) => {
+    setAllErrors((prevState) => ({
+      ...prevState,
+      [field]: errorMessage,
+    }));
+  };
+
   //form submission
   const handleAuthFormSubmit = (e: React.FormEvent) => {
     //prevent default form submission and reset values before submission
@@ -43,54 +57,64 @@ export default function AuthForm() {
     );
 
     //if there is an error, set the error message
+
     if (hasFullNameError) {
-      setAllErrors((prevState) => ({
-        ...prevState,
-        fullNameError: hasFullNameError,
-      }));
+      setErrorsInState("fullNameError", hasFullNameError);
     }
     if (hasEmailError) {
-      setAllErrors((prevState) => ({
-        ...prevState,
-        emailError: hasEmailError,
-      }));
+      setErrorsInState("emailError", hasEmailError);
     }
     if (hasPasswordError) {
-      setAllErrors((prevState) => ({
-        ...prevState,
-        passwordError: hasPasswordError,
-      }));
+      setErrorsInState("passwordError", hasPasswordError);
     }
     if (hasConfirmPasswordError) {
-      setAllErrors((prevState) => ({
-        ...prevState,
-        confirmPasswordError: hasConfirmPasswordError,
-      }));
+      setErrorsInState("confirmPasswordError", hasConfirmPasswordError);
     }
 
     //if no error found, console.log(email,password)
-    const hasErrors = Object.values(allErrors).some((error) => error !== "");
+    const hasErrors =
+      hasFullNameError ||
+      hasEmailError ||
+      hasPasswordError ||
+      hasConfirmPasswordError;
+
     if (!hasErrors) {
       console.log(
         `All inputs are valid for ${fullName}, ${email}, ${password}`
       );
     }
 
-    // if signup form, then signup
-    if (!hasErrors && !isSignin) {
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          // Signed up
-          const user = userCredential.user;
-          console.log("User Details: " + user);
-          // ...
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log("Errors: " + errorCode, errorMessage);
-          // ..
-        });
+    // if signin form => signin, if signup form => signup
+    if (!hasErrors) {
+      if (isSignin) {
+        signInWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            // Signed in
+            const user = userCredential.user;
+            console.log("Sign in error : " + user);
+            // ...
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.error("Sign in error : " + errorCode, errorMessage);
+          });
+      }
+      if (!isSignin) {
+        createUserWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            // Signed up
+            const user = userCredential.user;
+            console.log("Sign up error : " + user);
+            // ...
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.error("Sign up error : " + errorCode, errorMessage);
+            // ..
+          });
+      }
     }
   };
 
@@ -113,7 +137,13 @@ export default function AuthForm() {
               type="text"
               placeholder="Full Name"
               value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
+              onChange={(e) => {
+                setFullName(e.target.value);
+                setErrorsInState(
+                  "fullNameError",
+                  checkFullNameError(e.target.value)
+                );
+              }}
               onBlur={() =>
                 setAllErrors((prevState) => ({
                   ...prevState,
@@ -143,7 +173,10 @@ export default function AuthForm() {
             type="email"
             placeholder="Email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setErrorsInState("emailError", checkEmailRegex(e.target.value));
+            }}
             onBlur={() =>
               setAllErrors((prevState) => ({
                 ...prevState,
@@ -172,14 +205,21 @@ export default function AuthForm() {
             type="password"
             placeholder="Password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            // onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setErrorsInState(
+                "passwordError",
+                checkPasswordRegex(e.target.value)
+              );
+            }}
             onBlur={() =>
               setAllErrors((prevState) => ({
                 ...prevState,
-                passwordErrorError: checkPasswordRegex(password),
+                passwordError: checkPasswordRegex(password),
               }))
             }
-            className={`w-80 h-14 bg-transparent border-2 py-2 px-4 placeholder:text-[#bababa] rounded-md text-white outline-none ring-0 active:outline-none active:ring-0 border-[#606060] focus:border-white ${
+            className={`w-80 h-14 bg-transparent border-2 py-2 px-4 transition-all ease-in-out focus:placeholder:text-white focus:placeholder:text-[13px] focus:placeholder: rounded-md text-white outline-none ring-0 active:outline-none active:ring-0 border-[#606060] focus:border-white ${
               allErrors?.passwordError && "border-[#e50914] "
             }`}
           />
@@ -202,7 +242,14 @@ export default function AuthForm() {
               type="password"
               placeholder="Confirm Password"
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              // onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={(e) => {
+                setConfirmPassword(e.target.value);
+                setErrorsInState(
+                  "confirmPasswordError",
+                  checkConfirmPasswordError(password, e.target.value)
+                );
+              }}
               onBlur={() =>
                 setAllErrors((prevState) => ({
                   ...prevState,
@@ -212,7 +259,7 @@ export default function AuthForm() {
                   ),
                 }))
               }
-              className={`w-80 h-14 bg-transparent border-2 py-2 px-4 placeholder:text-[#bababa] rounded-md text-white outline-none ring-0 active:outline-none active:ring-0 border-[#606060] focus:border-white ${
+              className={`w-80 h-14 bg-transparent border-2 py-2 px-4 transition-all ease-in-out focus:placeholder:text-white focus:placeholder:text-[13px] focus:placeholder: rounded-md text-white outline-none ring-0 active:outline-none active:ring-0 border-[#606060] focus:border-white ${
                 allErrors?.confirmPasswordError && "border-[#e50914] "
               }`}
             />
