@@ -6,12 +6,12 @@ import {
   checkPasswordRegex,
 } from "@/utils/AuthValidations";
 import { useState } from "react";
-import { RxCrossCircled } from "react-icons/rx";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { auth } from "@/utils/Firebase";
+import { HomeInput } from "./HomeInput";
 
 export default function AuthForm() {
   //check isSignin form state
@@ -132,43 +132,78 @@ export default function AuthForm() {
       >
         {/* if signUp form, show fullName input */}
         {!isSignin && (
-          <div className="flex flex-col my-[6px]">
-            <input
-              type="text"
-              placeholder="Full Name"
-              value={fullName}
-              onChange={(e) => {
-                setFullName(e.target.value);
-                setErrorsInState(
-                  "fullNameError",
-                  checkFullNameError(e.target.value)
-                );
-              }}
-              onBlur={() =>
-                setAllErrors((prevState) => ({
-                  ...prevState,
-                  fullNameError: checkFullNameError(fullName),
-                }))
-              }
-              className={`w-80 h-14 bg-transparent border-2 py-2 px-4 transition-all ease-in-out focus:placeholder:text-white focus:placeholder:text-[13px] focus:placeholder: rounded-md text-white outline-none ring-0 active:outline-none active:ring-0 border-[#606060] focus:border-white ${
-                allErrors?.fullNameError && "border-[#e50914]"
-              }`}
-            />
-            {allErrors?.fullNameError ? (
-              <p
-                className={`text-netflixRed flex items-center text-md my-0 max-w-80 `}
-              >
-                <RxCrossCircled className="font-bold" /> &nbsp;
-                {allErrors?.fullNameError}
-              </p>
-            ) : (
-              <>&nbsp;</>
-            )}
-          </div>
+          <HomeInput
+            inputType="text"
+            inputPlaceholder="Full Name"
+            inputValue={fullName}
+            inputOnChange={(e) => {
+              setFullName(e.target.value);
+              setErrorsInState(
+                "fullNameError",
+                checkFullNameError(e.target.value)
+              );
+            }}
+            inputOnBlur={() =>
+              setAllErrors((prevState) => ({
+                ...prevState,
+                fullNameError: checkFullNameError(fullName),
+              }))
+            }
+            inputError={allErrors?.fullNameError}
+          />
+          // <div className="flex flex-col my-[6px]">
+          //   <input
+          //     type="text"
+          //     placeholder="Full Name"
+          //     value={fullName}
+          //     onChange={(e) => {
+          //       setFullName(e.target.value);
+          //       setErrorsInState(
+          //         "fullNameError",
+          //         checkFullNameError(e.target.value)
+          //       );
+          //     }}
+          //     onBlur={() =>
+          //       setAllErrors((prevState) => ({
+          //         ...prevState,
+          //         fullNameError: checkFullNameError(fullName),
+          //       }))
+          //     }
+          //     className={`w-80 h-14 bg-transparent border-2 py-2 px-4 transition-all ease-in-out focus:placeholder:text-white focus:placeholder:text-[13px] focus:placeholder: rounded-md text-white outline-none ring-0 active:outline-none active:ring-0 border-[#606060] focus:border-white ${
+          //       allErrors?.fullNameError && "border-[#e50914]"
+          //     }`}
+          //   />
+          //   {allErrors?.fullNameError ? (
+          //     <p
+          //       className={`text-netflixRed flex items-center text-md my-0 max-w-80 `}
+          //     >
+          //       <RxCrossCircled className="font-bold" /> &nbsp;
+          //       {allErrors?.fullNameError}
+          //     </p>
+          //   ) : (
+          //     <>&nbsp;</>
+          //   )}
+          // </div>
         )}
 
         {/* email input */}
-        <div className="flex flex-col my-[6px]">
+        <HomeInput
+          inputType="email"
+          inputPlaceholder="Email"
+          inputValue={email}
+          inputOnChange={(e) => {
+            setEmail(e.target.value);
+            setErrorsInState("emailError", checkEmailRegex(e.target.value));
+          }}
+          inputOnBlur={() =>
+            setAllErrors((prevState) => ({
+              ...prevState,
+              emailError: checkEmailRegex(email),
+            }))
+          }
+          inputError={allErrors?.emailError}
+        />
+        {/* <div className="flex flex-col my-[6px]">
           <input
             type="email"
             placeholder="Email"
@@ -197,10 +232,29 @@ export default function AuthForm() {
           ) : (
             <>&nbsp;</>
           )}
-        </div>
+        </div> */}
 
         {/* password input */}
-        <div className="flex flex-col my-[6px] ">
+        <HomeInput
+          inputType="password"
+          inputPlaceholder="Password"
+          inputValue={password}
+          inputOnChange={(e) => {
+            setPassword(e.target.value);
+            setErrorsInState(
+              "passwordError",
+              checkPasswordRegex(e.target.value)
+            );
+          }}
+          inputOnBlur={() =>
+            setAllErrors((prevState) => ({
+              ...prevState,
+              passwordError: checkPasswordRegex(password),
+            }))
+          }
+          inputError={allErrors?.passwordError}
+        />
+        {/* <div className="flex flex-col my-[6px] ">
           <input
             type="password"
             placeholder="Password"
@@ -233,47 +287,69 @@ export default function AuthForm() {
           ) : (
             <>&nbsp;</>
           )}
-        </div>
+        </div> */}
 
         {/* if signUp form, confirm password input */}
         {!isSignin && (
-          <div className="flex flex-col my-[6px] ">
-            <input
-              type="password"
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              // onChange={(e) => setConfirmPassword(e.target.value)}
-              onChange={(e) => {
-                setConfirmPassword(e.target.value);
-                setErrorsInState(
-                  "confirmPasswordError",
-                  checkConfirmPasswordError(password, e.target.value)
-                );
-              }}
-              onBlur={() =>
-                setAllErrors((prevState) => ({
-                  ...prevState,
-                  confirmPasswordError: checkConfirmPasswordError(
-                    password,
-                    confirmPassword
-                  ),
-                }))
-              }
-              className={`w-80 h-14 bg-transparent border-2 py-2 px-4 transition-all ease-in-out focus:placeholder:text-white focus:placeholder:text-[13px] focus:placeholder: rounded-md text-white outline-none ring-0 active:outline-none active:ring-0 border-[#606060] focus:border-white ${
-                allErrors?.confirmPasswordError && "border-[#e50914] "
-              }`}
-            />
-            {allErrors?.confirmPasswordError ? (
-              <p
-                className={`text-netflixRed flex items-center text-md my-0 max-w-80`}
-              >
-                <RxCrossCircled className="font-bold" /> &nbsp;
-                {allErrors?.confirmPasswordError}
-              </p>
-            ) : (
-              <>&nbsp;</>
-            )}
-          </div>
+          <HomeInput
+            inputType="password"
+            inputPlaceholder="Confirm Password"
+            inputValue={confirmPassword}
+            inputOnChange={(e) => {
+              setConfirmPassword(e.target.value);
+              setErrorsInState(
+                "confirmPasswordError",
+                checkConfirmPasswordError(password, e.target.value)
+              );
+            }}
+            inputOnBlur={() =>
+              setAllErrors((prevState) => ({
+                ...prevState,
+                confirmPasswordError: checkConfirmPasswordError(
+                  password,
+                  confirmPassword
+                ),
+              }))
+            }
+            inputError={allErrors?.confirmPasswordError}
+          />
+          // <div className="flex flex-col my-[6px] ">
+          //   <input
+          //     type="password"
+          //     placeholder="Confirm Password"
+          //     value={confirmPassword}
+          //     // onChange={(e) => setConfirmPassword(e.target.value)}
+          //     onChange={(e) => {
+          //       setConfirmPassword(e.target.value);
+          //       setErrorsInState(
+          //         "confirmPasswordError",
+          //         checkConfirmPasswordError(password, e.target.value)
+          //       );
+          //     }}
+          //     onBlur={() =>
+          //       setAllErrors((prevState) => ({
+          //         ...prevState,
+          //         confirmPasswordError: checkConfirmPasswordError(
+          //           password,
+          //           confirmPassword
+          //         ),
+          //       }))
+          //     }
+          //     className={`w-80 h-14 bg-transparent border-2 py-2 px-4 transition-all ease-in-out focus:placeholder:text-white focus:placeholder:text-[13px] focus:placeholder: rounded-md text-white outline-none ring-0 active:outline-none active:ring-0 border-[#606060] focus:border-white ${
+          //       allErrors?.confirmPasswordError && "border-[#e50914] "
+          //     }`}
+          //   />
+          //   {allErrors?.confirmPasswordError ? (
+          //     <p
+          //       className={`text-netflixRed flex items-center text-md my-0 max-w-80`}
+          //     >
+          //       <RxCrossCircled className="font-bold" /> &nbsp;
+          //       {allErrors?.confirmPasswordError}
+          //     </p>
+          //   ) : (
+          //     <>&nbsp;</>
+          //   )}
+          // </div>
         )}
 
         {/* submit button */}
