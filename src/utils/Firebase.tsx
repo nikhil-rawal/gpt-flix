@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+import { getAnalytics, isSupported } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -18,7 +18,24 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+
+// Initialize Firebase Authentication
 const auth = getAuth(app);
+
+// Function to initialize Analytics with async check
+const initializeAnalytics = async () => {
+  // Check if window is defined and if analytics is supported in the browser
+  if (typeof window !== "undefined" && (await isSupported())) {
+    const analytics = getAnalytics(app);
+    return analytics;
+  }
+  return null; // Return null if Analytics is not supported
+};
+
+// Initialize analytics
+let analytics;
+initializeAnalytics().then((initializedAnalytics) => {
+  analytics = initializedAnalytics;
+});
 
 export { auth, analytics, app };
