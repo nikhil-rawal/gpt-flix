@@ -1,6 +1,17 @@
 "use client";
+import {
+  checkConfirmPasswordError,
+  checkEmailRegex,
+  checkFullNameError,
+  checkPasswordRegex,
+} from "@/utils/AuthValidations";
 import { useState } from "react";
-import { RxCrossCircled } from "react-icons/rx";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "@/utils/Firebase";
+import { HomeInput } from "./HomeInput";
 
 export default function AuthForm() {
   //check isSignin form state
@@ -13,31 +24,22 @@ export default function AuthForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   //fullName, email, password, confirmPassword ERROR states
-  const [fullNameError, setFullNameError] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [allErrors, setAllErrors] = useState({
+    fullNameError: "",
+    emailError: "",
+    passwordError: "",
+    confirmPasswordError: "",
+  });
 
-  //email and password REGEX patterns
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-
-  //validate fullName, email, password,confirmPassword using Regex
-  const checkFullNameError = (fullName: string) => {
-    return fullName.length < 2 ? "Please enter a valid name !" : "";
-  };
-  const checkEmailRegex = (email: string) => {
-    if (!emailRegex.test(email)) return "Please enter a valid email !";
-    return "";
-  };
-  const checkPasswordRegex = (password: string) => {
-    if (!passwordRegex.test(password)) return "Please enter a valid password !";
-    return "";
-  };
-  const checkConfirmPasswordError = (confirmPassword: string) => {
-    if (!confirmPassword) return "Please confirm your password!";
-    if (confirmPassword !== password) return "Passwords do not match !";
-    return "";
+  //setting error messages in state
+  const setErrorsInState = (
+    field: keyof typeof allErrors,
+    errorMessage: string
+  ) => {
+    setAllErrors((prevState) => ({
+      ...prevState,
+      [field]: errorMessage,
+    }));
   };
 
   //form submission
@@ -46,28 +48,73 @@ export default function AuthForm() {
     e.preventDefault();
 
     //input validations
-    const isFullNameValid = checkFullNameError(fullName);
-    const isEmailValid = checkEmailRegex(email);
-    const isPasswordValid = checkPasswordRegex(password);
-    const isConfirmPasswordValid = checkConfirmPasswordError(confirmPassword);
+    const hasFullNameError = checkFullNameError(fullName);
+    const hasEmailError = checkEmailRegex(email);
+    const hasPasswordError = checkPasswordRegex(password);
+    const hasConfirmPasswordError = checkConfirmPasswordError(
+      password,
+      confirmPassword
+    );
 
     //if there is an error, set the error message
-    if (isFullNameValid) {
-      setFullNameError(isFullNameValid);
+
+    if (hasFullNameError) {
+      setErrorsInState("fullNameError", hasFullNameError);
     }
-    if (isEmailValid) {
-      setEmailError(isEmailValid);
+    if (hasEmailError) {
+      setErrorsInState("emailError", hasEmailError);
     }
-    if (isPasswordValid) {
-      setPasswordError(isPasswordValid);
+    if (hasPasswordError) {
+      setErrorsInState("passwordError", hasPasswordError);
     }
-    if (isConfirmPasswordValid) {
-      setConfirmPasswordError(isConfirmPasswordValid);
+    if (hasConfirmPasswordError) {
+      setErrorsInState("confirmPasswordError", hasConfirmPasswordError);
     }
 
     //if no error found, console.log(email,password)
-    if (!isEmailValid && !isPasswordValid) {
-      console.log(`email: ${email}, password: ${password}`);
+    const hasErrors =
+      hasFullNameError ||
+      hasEmailError ||
+      hasPasswordError ||
+      hasConfirmPasswordError;
+
+    if (!hasErrors) {
+      console.log(
+        `All inputs are valid for ${fullName}, ${email}, ${password}`
+      );
+    }
+
+    // if signin form => signin, if signup form => signup
+    if (!hasErrors) {
+      if (isSignin) {
+        signInWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            // Signed in
+            const user = userCredential.user;
+            console.log("Sign in error : " + user);
+            // ...
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.error("Sign in error : " + errorCode, errorMessage);
+          });
+      }
+      if (!isSignin) {
+        createUserWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            // Signed up
+            const user = userCredential.user;
+            console.log("Sign up error : " + user);
+            // ...
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.error("Sign up error : " + errorCode, errorMessage);
+            // ..
+          });
+      }
     }
   };
 
@@ -85,103 +132,224 @@ export default function AuthForm() {
       >
         {/* if signUp form, show fullName input */}
         {!isSignin && (
-          <div className="flex flex-col my-[6px]">
-            <input
-              type="text"
-              placeholder="Full Name"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              onBlur={() => setFullNameError(checkFullNameError(fullName))}
-              className={`w-80 h-14 bg-transparent border-2 py-2 px-4 transition-all ease-in-out focus:placeholder:text-white focus:placeholder:text-[13px] focus:placeholder: rounded-md text-white outline-none ring-0 active:outline-none active:ring-0 border-[#606060] focus:border-white ${
-                fullNameError && "border-[#e50914]"
-              }`}
-            />
-            {fullNameError ? (
-              <p
-                className={`text-netflixRed flex items-center text-md my-0 max-w-80 `}
-              >
-                <RxCrossCircled className="font-bold" /> &nbsp;{fullNameError}
-              </p>
-            ) : (
-              <>&nbsp;</>
-            )}
-          </div>
+          <HomeInput
+            inputType="text"
+            inputPlaceholder="Full Name"
+            inputValue={fullName}
+            inputOnChange={(e) => {
+              setFullName(e.target.value);
+              setErrorsInState(
+                "fullNameError",
+                checkFullNameError(e.target.value)
+              );
+            }}
+            inputOnBlur={() =>
+              setAllErrors((prevState) => ({
+                ...prevState,
+                fullNameError: checkFullNameError(fullName),
+              }))
+            }
+            inputError={allErrors?.fullNameError}
+          />
+          // <div className="flex flex-col my-[6px]">
+          //   <input
+          //     type="text"
+          //     placeholder="Full Name"
+          //     value={fullName}
+          //     onChange={(e) => {
+          //       setFullName(e.target.value);
+          //       setErrorsInState(
+          //         "fullNameError",
+          //         checkFullNameError(e.target.value)
+          //       );
+          //     }}
+          //     onBlur={() =>
+          //       setAllErrors((prevState) => ({
+          //         ...prevState,
+          //         fullNameError: checkFullNameError(fullName),
+          //       }))
+          //     }
+          //     className={`w-80 h-14 bg-transparent border-2 py-2 px-4 transition-all ease-in-out focus:placeholder:text-white focus:placeholder:text-[13px] focus:placeholder: rounded-md text-white outline-none ring-0 active:outline-none active:ring-0 border-[#606060] focus:border-white ${
+          //       allErrors?.fullNameError && "border-[#e50914]"
+          //     }`}
+          //   />
+          //   {allErrors?.fullNameError ? (
+          //     <p
+          //       className={`text-netflixRed flex items-center text-md my-0 max-w-80 `}
+          //     >
+          //       <RxCrossCircled className="font-bold" /> &nbsp;
+          //       {allErrors?.fullNameError}
+          //     </p>
+          //   ) : (
+          //     <>&nbsp;</>
+          //   )}
+          // </div>
         )}
 
         {/* email input */}
-        <div className="flex flex-col my-[6px]">
+        <HomeInput
+          inputType="email"
+          inputPlaceholder="Email"
+          inputValue={email}
+          inputOnChange={(e) => {
+            setEmail(e.target.value);
+            setErrorsInState("emailError", checkEmailRegex(e.target.value));
+          }}
+          inputOnBlur={() =>
+            setAllErrors((prevState) => ({
+              ...prevState,
+              emailError: checkEmailRegex(email),
+            }))
+          }
+          inputError={allErrors?.emailError}
+        />
+        {/* <div className="flex flex-col my-[6px]">
           <input
             type="email"
             placeholder="Email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            onBlur={() => setEmailError(checkEmailRegex(email))}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setErrorsInState("emailError", checkEmailRegex(e.target.value));
+            }}
+            onBlur={() =>
+              setAllErrors((prevState) => ({
+                ...prevState,
+                emailError: checkEmailRegex(email),
+              }))
+            }
             className={`w-80 h-14 bg-transparent border-2 py-2 px-4 transition-all ease-in-out focus:placeholder:text-white focus:placeholder:text-[13px] focus:placeholder: rounded-md text-white outline-none ring-0 active:outline-none active:ring-0 border-[#606060] focus:border-white ${
-              emailError && "border-[#e50914]"
+              allErrors?.emailError && "border-[#e50914]"
             }`}
           />
-          {emailError ? (
+          {allErrors?.emailError ? (
             <p
               className={`text-netflixRed flex items-center text-md my-0 max-w-80`}
             >
-              <RxCrossCircled className="font-bold" /> &nbsp;{emailError}
+              <RxCrossCircled className="font-bold" /> &nbsp;
+              {allErrors?.emailError}
             </p>
           ) : (
             <>&nbsp;</>
           )}
-        </div>
+        </div> */}
 
         {/* password input */}
-        <div className="flex flex-col my-[6px] ">
+        <HomeInput
+          inputType="password"
+          inputPlaceholder="Password"
+          inputValue={password}
+          inputOnChange={(e) => {
+            setPassword(e.target.value);
+            setErrorsInState(
+              "passwordError",
+              checkPasswordRegex(e.target.value)
+            );
+          }}
+          inputOnBlur={() =>
+            setAllErrors((prevState) => ({
+              ...prevState,
+              passwordError: checkPasswordRegex(password),
+            }))
+          }
+          inputError={allErrors?.passwordError}
+        />
+        {/* <div className="flex flex-col my-[6px] ">
           <input
             type="password"
             placeholder="Password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            onBlur={() => setPasswordError(checkPasswordRegex(password))}
-            className={`w-80 h-14 bg-transparent border-2 py-2 px-4 placeholder:text-[#bababa] rounded-md text-white outline-none ring-0 active:outline-none active:ring-0 border-[#606060] focus:border-white ${
-              passwordError && "border-[#e50914] "
+            // onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setErrorsInState(
+                "passwordError",
+                checkPasswordRegex(e.target.value)
+              );
+            }}
+            onBlur={() =>
+              setAllErrors((prevState) => ({
+                ...prevState,
+                passwordError: checkPasswordRegex(password),
+              }))
+            }
+            className={`w-80 h-14 bg-transparent border-2 py-2 px-4 transition-all ease-in-out focus:placeholder:text-white focus:placeholder:text-[13px] focus:placeholder: rounded-md text-white outline-none ring-0 active:outline-none active:ring-0 border-[#606060] focus:border-white ${
+              allErrors?.passwordError && "border-[#e50914] "
             }`}
           />
-          {passwordError ? (
+          {allErrors?.passwordError ? (
             <p
               className={`text-netflixRed flex items-center text-md my-0 max-w-80`}
             >
-              <RxCrossCircled className="font-bold" /> &nbsp;{passwordError}
+              <RxCrossCircled className="font-bold" /> &nbsp;
+              {allErrors?.passwordError}
             </p>
           ) : (
             <>&nbsp;</>
           )}
-        </div>
+        </div> */}
 
         {/* if signUp form, confirm password input */}
         {!isSignin && (
-          <div className="flex flex-col my-[6px] ">
-            <input
-              type="password"
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              onBlur={() =>
-                setConfirmPasswordError(
-                  checkConfirmPasswordError(confirmPassword)
-                )
-              }
-              className={`w-80 h-14 bg-transparent border-2 py-2 px-4 placeholder:text-[#bababa] rounded-md text-white outline-none ring-0 active:outline-none active:ring-0 border-[#606060] focus:border-white ${
-                confirmPasswordError && "border-[#e50914] "
-              }`}
-            />
-            {confirmPasswordError ? (
-              <p
-                className={`text-netflixRed flex items-center text-md my-0 max-w-80`}
-              >
-                <RxCrossCircled className="font-bold" /> &nbsp;
-                {confirmPasswordError}
-              </p>
-            ) : (
-              <>&nbsp;</>
-            )}
-          </div>
+          <HomeInput
+            inputType="password"
+            inputPlaceholder="Confirm Password"
+            inputValue={confirmPassword}
+            inputOnChange={(e) => {
+              setConfirmPassword(e.target.value);
+              setErrorsInState(
+                "confirmPasswordError",
+                checkConfirmPasswordError(password, e.target.value)
+              );
+            }}
+            inputOnBlur={() =>
+              setAllErrors((prevState) => ({
+                ...prevState,
+                confirmPasswordError: checkConfirmPasswordError(
+                  password,
+                  confirmPassword
+                ),
+              }))
+            }
+            inputError={allErrors?.confirmPasswordError}
+          />
+          // <div className="flex flex-col my-[6px] ">
+          //   <input
+          //     type="password"
+          //     placeholder="Confirm Password"
+          //     value={confirmPassword}
+          //     // onChange={(e) => setConfirmPassword(e.target.value)}
+          //     onChange={(e) => {
+          //       setConfirmPassword(e.target.value);
+          //       setErrorsInState(
+          //         "confirmPasswordError",
+          //         checkConfirmPasswordError(password, e.target.value)
+          //       );
+          //     }}
+          //     onBlur={() =>
+          //       setAllErrors((prevState) => ({
+          //         ...prevState,
+          //         confirmPasswordError: checkConfirmPasswordError(
+          //           password,
+          //           confirmPassword
+          //         ),
+          //       }))
+          //     }
+          //     className={`w-80 h-14 bg-transparent border-2 py-2 px-4 transition-all ease-in-out focus:placeholder:text-white focus:placeholder:text-[13px] focus:placeholder: rounded-md text-white outline-none ring-0 active:outline-none active:ring-0 border-[#606060] focus:border-white ${
+          //       allErrors?.confirmPasswordError && "border-[#e50914] "
+          //     }`}
+          //   />
+          //   {allErrors?.confirmPasswordError ? (
+          //     <p
+          //       className={`text-netflixRed flex items-center text-md my-0 max-w-80`}
+          //     >
+          //       <RxCrossCircled className="font-bold" /> &nbsp;
+          //       {allErrors?.confirmPasswordError}
+          //     </p>
+          //   ) : (
+          //     <>&nbsp;</>
+          //   )}
+          // </div>
         )}
 
         {/* submit button */}
