@@ -87,31 +87,11 @@ export default function AuthForm() {
       setErrorsInState("confirmPasswordError", isConfirmPasswordValid);
     }
 
-    // async function setUserDetails(user) {
-    //   try {
-    //     const updateUserDetails = useStore.getState().updateUserDetails;
-    //     updateUserDetails(user)
-    //   }
-    //   catch (error) {
-    //     console.error("Error updating user details:", error);
-    //   }
-    // }
-
     // if signin form => signin, if signup form => signup
-    // if (!hasErrors) {
     try {
       if (!isEmailValid && !isPasswordValid && isSignin) {
-        const userCredential = await signInWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
-        console.log(
-          "Signed in user : " +
-            JSON.stringify(userCredential?.user?.displayName) +
-            " " +
-            JSON.stringify(userCredential?.user?.email)
-        );
+        await signInWithEmailAndPassword(auth, email, password);
+        console.log("Sign-in successful");
       } else if (
         !isFullNameValid &&
         !isEmailValid &&
@@ -127,19 +107,14 @@ export default function AuthForm() {
         await updateProfile(userCredential.user, {
           displayName: fullName,
         });
-        console.log(
-          "Signed up user : " +
-            JSON.stringify(userCredential?.user?.displayName) +
-            " " +
-            JSON.stringify(userCredential?.user?.email)
-        );
+        console.log("Sign-up successful");
       }
       resetForm();
       router.push("/dashboard");
     } catch (error) {
       if (error instanceof FirebaseError) {
         console.error(
-          `${isSignin ? "Sign in" : "Sign up"} error :  + ${error?.code}, ${
+          `${isSignin ? "Sign-in" : "Sign-up"} error :  + ${error?.code}, ${
             error?.message
           }`
         );

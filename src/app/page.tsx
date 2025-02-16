@@ -1,7 +1,12 @@
+"use client";
 import AuthForm from "@/components/AuthForm";
 import Image from "next/image";
-
+import { useEffect } from "react";
+import authListener from "@/utils/authListener";
 export default function Home() {
+  useEffect(() => {
+    authListener();
+  }, []);
   return (
     <div className="relative w-full h-screen flex flex-col">
       {/* Background Image */}
