@@ -3,6 +3,8 @@ import { useStore } from "./Store";
 import { auth } from "@/utils/Firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
+// No memory leak, but component re-renders. So far working okay!
+
 export default function authListener() {
   const { setUserName, clearUserName } = useStore.getState();
 
