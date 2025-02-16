@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
 import { auth } from "@/utils/Firebase";
+// import { useStore } from "@/utils/Store";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -20,6 +21,8 @@ export default function Dashboard() {
     <div>
       <h1>Dashboard</h1>
       <button onClick={handleSignOut}>Sign Out</button>
+      <br />
+      <h1>{/* Welcome {userName}, your email is {userEmail} */}</h1>
     </div>
   );
 }
