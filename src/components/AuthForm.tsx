@@ -1,4 +1,6 @@
 "use client";
+import { FirebaseError } from "firebase/app";
+import { useRouter } from "next/navigation";
 import {
   checkConfirmPasswordError,
   checkEmailRegex,
@@ -14,6 +16,8 @@ import { auth } from "@/utils/Firebase";
 import { HomeInput } from "./HomeInput";
 
 export default function AuthForm() {
+  const router = useRouter();
+
   //check isSignin form state
   const [isSignin, setIsSignin] = useState(true);
 
@@ -42,8 +46,20 @@ export default function AuthForm() {
     }));
   };
 
+  function clearAll() {
+    setFullName("");
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+    setAllErrors({
+      fullNameError: "",
+      emailError: "",
+      passwordError: "",
+      confirmPasswordError: "",
+    });
+  }
   //form submission
-  const handleAuthFormSubmit = (e: React.FormEvent) => {
+  const handleAuthFormSubmit = async (e: React.FormEvent) => {
     //prevent default form submission and reset values before submission
     e.preventDefault();
 
@@ -57,7 +73,6 @@ export default function AuthForm() {
     );
 
     //if there is an error, set the error message
-
     if (hasFullNameError) {
       setErrorsInState("fullNameError", hasFullNameError);
     }
@@ -78,43 +93,66 @@ export default function AuthForm() {
       hasPasswordError ||
       hasConfirmPasswordError;
 
-    if (!hasErrors) {
-      console.log(
-        `All inputs are valid for ${fullName}, ${email}, ${password}`
-      );
-    }
-
     // if signin form => signin, if signup form => signup
     if (!hasErrors) {
-      if (isSignin) {
-        signInWithEmailAndPassword(auth, email, password)
-          .then((userCredential) => {
-            // Signed in
-            const user = userCredential.user;
-            console.log("Sign in error : " + user);
-            // ...
-          })
-          .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.error("Sign in error : " + errorCode, errorMessage);
-          });
+      try {
+        if (isSignin) {
+          const { user } = await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+          console.log("Signed in user : " + user);
+        } else {
+          const { user } = await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+          console.log("Signed up user : " + user);
+        }
+        clearAll();
+        router.push("/dashboard");
+      } catch (error) {
+        if (error instanceof FirebaseError) {
+          console.error(
+            `${isSignin ? "Sign in" : "Sign up"} error :  + ${error?.code}, ${
+              error?.message
+            }`
+          );
+        }
       }
-      if (!isSignin) {
-        createUserWithEmailAndPassword(auth, email, password)
-          .then((userCredential) => {
-            // Signed up
-            const user = userCredential.user;
-            console.log("Sign up error : " + user);
-            // ...
-          })
-          .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.error("Sign up error : " + errorCode, errorMessage);
-            // ..
-          });
-      }
+      // if (isSignin) {
+      //   signInWithEmailAndPassword(auth, email, password)
+      //     .then((userCredential) => {
+      //       // Signed in
+      //       const user = userCredential.user;
+      //       console.log("Sign in user : " + user);
+      //       clearAll();
+      //       router.push("/dashboard");
+      //     })
+      //     .catch((error) => {
+      //       const errorCode = error.code;
+      //       const errorMessage = error.message;
+      //       console.error("Sign in error : " + errorCode, errorMessage);
+      //     });
+      // }
+      // if (!isSignin) {
+      //   createUserWithEmailAndPassword(auth, email, password)
+      //     .then((userCredential) => {
+      //       // Signed up
+      //       const user = userCredential.user;
+      //       console.log("Sign up user : " + user);
+      //       clearAll();
+      //       router.push("/dashboard");
+      //     })
+      //     .catch((error) => {
+      //       const errorCode = error.code;
+      //       const errorMessage = error.message;
+      //       console.error("Sign up error : " + errorCode, errorMessage);
+      //       // ..
+      //     });
+      // }
     }
   };
 
