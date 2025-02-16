@@ -1,6 +1,6 @@
 import { RxCrossCircled } from "react-icons/rx";
 
-export const HomeInput = ({
+export const FormInput = ({
   inputType,
   inputPlaceholder,
   inputValue,

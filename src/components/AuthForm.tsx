@@ -2,18 +2,19 @@
 import { FirebaseError } from "firebase/app";
 import { useRouter } from "next/navigation";
 import {
-  checkConfirmPasswordError,
-  checkEmailRegex,
-  checkFullNameError,
-  checkPasswordRegex,
-} from "@/utils/AuthValidations";
+  validateConfirmPassword,
+  validateEmail,
+  validateFullName,
+  validatePassword,
+} from "@/utils/authFormValidations";
 import { useState } from "react";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 import { auth } from "@/utils/Firebase";
-import { HomeInput } from "./HomeInput";
+import { FormInput } from "./FormInput";
 
 export default function AuthForm() {
   const router = useRouter();
@@ -46,7 +47,7 @@ export default function AuthForm() {
     }));
   };
 
-  function clearAll() {
+  function resetForm() {
     setFullName("");
     setEmail("");
     setPassword("");
@@ -59,100 +60,65 @@ export default function AuthForm() {
     });
   }
   //form submission
-  const handleAuthFormSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     //prevent default form submission and reset values before submission
     e.preventDefault();
 
     //input validations
-    const hasFullNameError = checkFullNameError(fullName);
-    const hasEmailError = checkEmailRegex(email);
-    const hasPasswordError = checkPasswordRegex(password);
-    const hasConfirmPasswordError = checkConfirmPasswordError(
+    const isFullNameValid = validateFullName(fullName);
+    const isEmailValid = validateEmail(email);
+    const isPasswordValid = validatePassword(password);
+    const isConfirmPasswordValid = validateConfirmPassword(
       password,
       confirmPassword
     );
 
     //if there is an error, set the error message
-    if (hasFullNameError) {
-      setErrorsInState("fullNameError", hasFullNameError);
+    if (isFullNameValid) {
+      setErrorsInState("fullNameError", isFullNameValid);
     }
-    if (hasEmailError) {
-      setErrorsInState("emailError", hasEmailError);
+    if (isEmailValid) {
+      setErrorsInState("emailError", isEmailValid);
     }
-    if (hasPasswordError) {
-      setErrorsInState("passwordError", hasPasswordError);
+    if (isPasswordValid) {
+      setErrorsInState("passwordError", isPasswordValid);
     }
-    if (hasConfirmPasswordError) {
-      setErrorsInState("confirmPasswordError", hasConfirmPasswordError);
+    if (isConfirmPasswordValid) {
+      setErrorsInState("confirmPasswordError", isConfirmPasswordValid);
     }
-
-    //if no error found, console.log(email,password)
-    const hasErrors =
-      hasFullNameError ||
-      hasEmailError ||
-      hasPasswordError ||
-      hasConfirmPasswordError;
 
     // if signin form => signin, if signup form => signup
-    if (!hasErrors) {
-      try {
-        if (isSignin) {
-          const { user } = await signInWithEmailAndPassword(
-            auth,
-            email,
-            password
-          );
-          console.log("Signed in user : " + user);
-        } else {
-          const { user } = await createUserWithEmailAndPassword(
-            auth,
-            email,
-            password
-          );
-          console.log("Signed up user : " + user);
-        }
-        clearAll();
-        router.push("/dashboard");
-      } catch (error) {
-        if (error instanceof FirebaseError) {
-          console.error(
-            `${isSignin ? "Sign in" : "Sign up"} error :  + ${error?.code}, ${
-              error?.message
-            }`
-          );
-        }
+    try {
+      if (!isEmailValid && !isPasswordValid && isSignin) {
+        await signInWithEmailAndPassword(auth, email, password);
+        console.log("Sign-in successful");
+      } else if (
+        !isFullNameValid &&
+        !isEmailValid &&
+        !isPasswordValid &&
+        !isConfirmPasswordValid &&
+        !isSignin
+      ) {
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        await updateProfile(userCredential.user, {
+          displayName: fullName,
+        });
+        console.log("Sign-up successful");
       }
-      // if (isSignin) {
-      //   signInWithEmailAndPassword(auth, email, password)
-      //     .then((userCredential) => {
-      //       // Signed in
-      //       const user = userCredential.user;
-      //       console.log("Sign in user : " + user);
-      //       clearAll();
-      //       router.push("/dashboard");
-      //     })
-      //     .catch((error) => {
-      //       const errorCode = error.code;
-      //       const errorMessage = error.message;
-      //       console.error("Sign in error : " + errorCode, errorMessage);
-      //     });
-      // }
-      // if (!isSignin) {
-      //   createUserWithEmailAndPassword(auth, email, password)
-      //     .then((userCredential) => {
-      //       // Signed up
-      //       const user = userCredential.user;
-      //       console.log("Sign up user : " + user);
-      //       clearAll();
-      //       router.push("/dashboard");
-      //     })
-      //     .catch((error) => {
-      //       const errorCode = error.code;
-      //       const errorMessage = error.message;
-      //       console.error("Sign up error : " + errorCode, errorMessage);
-      //       // ..
-      //     });
-      // }
+      resetForm();
+      router.push("/dashboard");
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        console.error(
+          `${isSignin ? "Sign-in" : "Sign-up"} error :  + ${error?.code}, ${
+            error?.message
+          }`
+        );
+      }
     }
   };
 
@@ -166,11 +132,11 @@ export default function AuthForm() {
       </header>
       <form
         className="flex flex-col items-center justify-center w-full h-full"
-        onSubmit={handleAuthFormSubmit}
+        onSubmit={handleSubmit}
       >
         {/* if signUp form, show fullName input */}
         {!isSignin && (
-          <HomeInput
+          <FormInput
             inputType="text"
             inputPlaceholder="Full Name"
             inputValue={fullName}
@@ -178,13 +144,13 @@ export default function AuthForm() {
               setFullName(e.target.value);
               setErrorsInState(
                 "fullNameError",
-                checkFullNameError(e.target.value)
+                validateFullName(e.target.value)
               );
             }}
             inputOnBlur={() =>
               setAllErrors((prevState) => ({
                 ...prevState,
-                fullNameError: checkFullNameError(fullName),
+                fullNameError: validateFullName(fullName),
               }))
             }
             inputError={allErrors?.fullNameError}
@@ -192,39 +158,36 @@ export default function AuthForm() {
         )}
 
         {/* email input */}
-        <HomeInput
+        <FormInput
           inputType="email"
           inputPlaceholder="Email"
           inputValue={email}
           inputOnChange={(e) => {
             setEmail(e.target.value);
-            setErrorsInState("emailError", checkEmailRegex(e.target.value));
+            setErrorsInState("emailError", validateEmail(e.target.value));
           }}
           inputOnBlur={() =>
             setAllErrors((prevState) => ({
               ...prevState,
-              emailError: checkEmailRegex(email),
+              emailError: validateEmail(email),
             }))
           }
           inputError={allErrors?.emailError}
         />
 
         {/* password input */}
-        <HomeInput
+        <FormInput
           inputType="password"
           inputPlaceholder="Password"
           inputValue={password}
           inputOnChange={(e) => {
             setPassword(e.target.value);
-            setErrorsInState(
-              "passwordError",
-              checkPasswordRegex(e.target.value)
-            );
+            setErrorsInState("passwordError", validatePassword(e.target.value));
           }}
           inputOnBlur={() =>
             setAllErrors((prevState) => ({
               ...prevState,
-              passwordError: checkPasswordRegex(password),
+              passwordError: validatePassword(password),
             }))
           }
           inputError={allErrors?.passwordError}
@@ -232,7 +195,7 @@ export default function AuthForm() {
 
         {/* if signUp form, confirm password input */}
         {!isSignin && (
-          <HomeInput
+          <FormInput
             inputType="password"
             inputPlaceholder="Confirm Password"
             inputValue={confirmPassword}
@@ -240,13 +203,13 @@ export default function AuthForm() {
               setConfirmPassword(e.target.value);
               setErrorsInState(
                 "confirmPasswordError",
-                checkConfirmPasswordError(password, e.target.value)
+                validateConfirmPassword(password, e.target.value)
               );
             }}
             inputOnBlur={() =>
               setAllErrors((prevState) => ({
                 ...prevState,
-                confirmPasswordError: checkConfirmPasswordError(
+                confirmPasswordError: validateConfirmPassword(
                   password,
                   confirmPassword
                 ),
