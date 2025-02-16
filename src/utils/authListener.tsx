@@ -8,7 +8,7 @@ export default function authListener() {
 
   try {
     onAuthStateChanged(auth, (user) => {
-      console.log("Auth state changed:", user);
+      console.log("Auth state changed : ", user);
       if (user) {
         setUserName(user?.displayName || "Guest");
       } else {
@@ -16,6 +16,6 @@ export default function authListener() {
       }
     });
   } catch (error) {
-    console.error("Error Fetching Auth State Data : " + error);
+    console.error("Auth State Change Error : " + error);
   }
 }

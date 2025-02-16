@@ -13,8 +13,8 @@ export default function Dashboard() {
     authListener();
   }, []);
 
-  const userName = useStore((state) => state.userName);
-  const clearUserName = useStore((state) => state.clearUserName);
+  const userName = useStore((state) => state?.userName);
+  const clearUserName = useStore((state) => state?.clearUserName);
 
   async function handleSignOut() {
     try {
