@@ -1,6 +1,6 @@
 "use client";
 import { FirebaseError } from "firebase/app";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import {
   validateConfirmPassword,
   validateEmail,
@@ -17,7 +17,7 @@ import { auth } from "@/utils/Firebase";
 import { FormInput } from "./FormInput";
 
 export default function AuthForm() {
-  const router = useRouter();
+  // const router = useRouter();
 
   //check isSignin form state
   const [isSignin, setIsSignin] = useState(true);
@@ -47,18 +47,18 @@ export default function AuthForm() {
     }));
   };
 
-  function resetForm() {
-    setFullName("");
-    setEmail("");
-    setPassword("");
-    setConfirmPassword("");
-    setAllErrors({
-      fullNameError: "",
-      emailError: "",
-      passwordError: "",
-      confirmPasswordError: "",
-    });
-  }
+  // function resetForm() {
+  //   setFullName("");
+  //   setEmail("");
+  //   setPassword("");
+  //   setConfirmPassword("");
+  //   setAllErrors({
+  //     fullNameError: "",
+  //     emailError: "",
+  //     passwordError: "",
+  //     confirmPasswordError: "",
+  //   });
+  // }
   //form submission
   const handleSubmit = async (e: React.FormEvent) => {
     //prevent default form submission and reset values before submission
@@ -91,7 +91,7 @@ export default function AuthForm() {
     try {
       if (!isEmailValid && !isPasswordValid && isSignin) {
         await signInWithEmailAndPassword(auth, email, password);
-        console.log("Sign-in successful");
+        // console.log("Sign-in successful");
       } else if (
         !isFullNameValid &&
         !isEmailValid &&
@@ -107,10 +107,10 @@ export default function AuthForm() {
         await updateProfile(userCredential.user, {
           displayName: fullName,
         });
-        console.log("Sign-up successful");
+        // console.log("Sign-up successful");
       }
-      resetForm();
-      router.push("/dashboard");
+      // resetForm();
+      // router.push("/dashboard");
     } catch (error) {
       if (error instanceof FirebaseError) {
         console.error(
