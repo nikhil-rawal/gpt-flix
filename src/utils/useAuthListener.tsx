@@ -3,7 +3,7 @@ import { useStore } from "./Store";
 import { auth } from "@/utils/Firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import resetForm from "@/utils/resetForm";
+// import resetForm from "@/utils/resetForm";
 import { useEffect } from "react";
 
 export default function AuthListener() {
@@ -13,15 +13,15 @@ export default function AuthListener() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       try {
-        console.log("Auth state changed from useAuthListener: ", user);
         if (user) {
           setUserName(user?.displayName || "Guest");
-          resetForm();
+          // resetForm();
           router.push("/dashboard");
           console.log("Signed-in to dashboard: from AuthListener");
         } else {
           clearUserName();
           router.push("/");
+          // resetForm();
           console.log("Sign-out successful: from AuthListener");
         }
       } catch (error) {
@@ -42,14 +42,15 @@ export default function AuthListener() {
   //       setUserName(user?.displayName || "Guest");
   //       resetForm();
   //       router.push("/dashboard");
-  //       console.log("Signed-in to dashboard : from AuthListener");
+  //       console.log("Signed-in to dashboard : from useAuthListener");
   //     } else {
   //       clearUserName();
   //       router.push("/");
-  //       console.log("Sign-out successful : from AuthListener");
+  //       resetForm();
+  //       console.log("Sign-out successful : from useAuthListener");
   //     }
   //   });
   // } catch (error) {
-  //   console.error("Auth State Change Error : " + error);
+  //   console.error("from useAuthListener Error : " + error);
   // }
 }
