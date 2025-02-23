@@ -6,7 +6,7 @@ const BackgroundImage = () => {
     <>
       <Image
         src="https://assets.nflxext.com/ffe/siteui/vlv3/638e9299-0637-42d1-ba39-54ade4cf2bf6/web/CA-en-20250203-TRIFECTA-perspective_219648ef-70c0-4366-bec5-f9dae73ccf74_large.jpg"
-        alt="default-bg-image"
+        alt="default-background-image"
         fill
         unoptimized
         style={{ objectFit: "cover" }}
