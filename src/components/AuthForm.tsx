@@ -17,6 +17,9 @@ import { FormInput } from "./FormInput";
 // sendPasswordResetEmail,
 // import { FaGithub } from "react-icons/fa";
 // import { FaGoogle } from "react-icons/fa";
+// https://firebase.google.com/docs/auth/web/google-signin
+// https://firebase.google.com/docs/auth/web/apple
+// https://firebase.google.com/docs/auth/web/github-auth
 
 export default function AuthForm() {
   //check isSignin form state
