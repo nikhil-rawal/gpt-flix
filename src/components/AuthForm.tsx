@@ -14,6 +14,9 @@ import {
 } from "firebase/auth";
 import { auth } from "@/utils/Firebase";
 import { FormInput } from "./FormInput";
+// sendPasswordResetEmail,
+// import { FaGithub } from "react-icons/fa";
+// import { FaGoogle } from "react-icons/fa";
 
 export default function AuthForm() {
   //check isSignin form state
@@ -44,7 +47,7 @@ export default function AuthForm() {
     }));
   };
 
-  //form submission
+  // Handle Form Submission
   const handleSubmit = async (e: React.FormEvent) => {
     //prevent default form submission and reset values before submission
     e.preventDefault();
@@ -118,6 +121,20 @@ export default function AuthForm() {
       }
     }
   };
+
+  // Handle Forgot Password
+  // const handleForgotPassword = async (e:React.FormEvent) => {
+  //   e.preventDefault();
+  //   try {
+  //     sendPasswordResetEmail(auth, email).then(() => {
+  //       console.log("Password Reset Email Sent!");
+  //     });
+  //   } catch (error) {
+  //     const errorCode = error?.code;
+  //     const errorMessage = error?.message;
+  //     console.error(`Forgot Password Error : ${errorCode}, ${errorMessage}`);
+  //   }
+  // };
 
   return (
     <div className="flex flex-col justify-center rounded-sm  bg-opacity-60 bg-black m-4 p-10">
@@ -231,6 +248,9 @@ export default function AuthForm() {
         {isSignin ? (
           <p className="my-[12px] text-white text-center">
             <button className="text-white">Forgot Password?</button>
+            {/* <button className="text-white" onClick={handleForgotPassword}>
+              Forgot Password?
+            </button> */}
           </p>
         ) : null}
 

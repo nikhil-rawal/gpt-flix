@@ -3,6 +3,10 @@ import { signOut } from "firebase/auth";
 import { auth } from "@/utils/Firebase";
 import useAuthListener from "@/utils/useAuthListener";
 import { useStore } from "@/utils/Store";
+// import { RxCrossCircled } from "react-icons/rx";
+{
+  /* <RxCrossCircled className="font-bold" /> &nbsp; */
+}
 
 export default function Header() {
   useAuthListener();
