@@ -72,10 +72,25 @@ export default function AuthForm() {
       setErrorsInState("confirmPasswordError", isConfirmPasswordValid);
     }
 
+    //form reset
+    function resetForm() {
+      setFullName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+      setAllErrors({
+        fullNameError: "",
+        emailError: "",
+        passwordError: "",
+        confirmPasswordError: "",
+      });
+    }
+
     // if signin form => signin, if signup form => signup
     try {
       if (!isEmailValid && !isPasswordValid && isSignin) {
         await signInWithEmailAndPassword(auth, email, password);
+        resetForm();
       } else if (
         !isFullNameValid &&
         !isEmailValid &&
@@ -91,6 +106,7 @@ export default function AuthForm() {
         await updateProfile(userCredential.user, {
           displayName: fullName,
         });
+        resetForm();
       }
     } catch (error) {
       if (error instanceof FirebaseError) {

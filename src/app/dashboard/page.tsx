@@ -2,7 +2,7 @@
 import { useStore } from "@/utils/Store";
 
 export default function Dashboard() {
-  const userName = useStore((state) => state?.userName);
+  const userName = useStore((state) => state.userName);
 
   return (
     <div>
