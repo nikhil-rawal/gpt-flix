@@ -4,7 +4,7 @@ const NetflixLogo = () => {
   return (
     <>
       <svg
-        className="text-netflixRed fill-netflixRed absolute w-[9.25rem] h-[2.5rem] ml-40 mt-6"
+        className="text-netflixRed fill-netflixRed absolute w-[9.25rem] h-[2.5rem] "
         viewBox="0 0 111 30"
       >
         <g>

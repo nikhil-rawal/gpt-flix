@@ -1,11 +1,8 @@
 "use client";
 import { useStore } from "@/utils/Store";
-import useAuthListener from "@/utils/useAuthListener";
 
 export default function Dashboard() {
-  useAuthListener();
-
-  const userName = useStore((state) => state?.userName);
+  const userName = useStore((state) => state.userName);
 
   return (
     <div>
