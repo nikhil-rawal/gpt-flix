@@ -8,6 +8,9 @@ import {
   trendingMovies,
 } from "../tmdbResponse";
 import { useEffect } from "react";
+import { FaPlay } from "react-icons/fa6";
+import { IoInformationCircleSharp } from "react-icons/io5";
+
 export default function Dashboard() {
   const userName = useStore((state) => state.userName);
   useEffect(() => {
@@ -17,7 +20,7 @@ export default function Dashboard() {
       topRatedMovies,
       upcomingMovies,
       trendingMovies,
-      nowPlayingMovies.results[0].id
+      nowPlayingMovies?.results[0]?.id
     );
   }, []);
   // const videourl = `https://api.themoviedb.org/3/movie/${nowPlayingMovies.results[0].id}/videos?language=en-US`;
@@ -131,18 +134,22 @@ export default function Dashboard() {
           allowFullScreen
         />
       </div>
-      <div className="flex flex-col items-center justify-center text-white w-4/12 pt-96">
-        <h1>Movie Name</h1>
-        <p>
-          Two married spies caught in the crosshairs of an international
-          intelligence network will stop at nothing to obtain a critical asset.
-          Joe and Lara are agents living off the grid whose quiet retreat at a
-          winter resort is blown to shreds when members of the old guard suspect
-          the two may have joined an elite team of rogue spies, known as Alarum.
+      <div className="flex flex-col justify-center text-white w-5/12 pt-80 px-8">
+        <h1 className="text-6xl font-bold">
+          {nowPlayingMovies?.results[0]?.title}
+        </h1>
+        <p className="text-lg py-2 my-2">
+          {nowPlayingMovies?.results[0]?.overview}
         </p>
-        <div className="flex flex-row">
-          <button className="bg-blue-500 text-white p-2 m-2">Play</button>
-          <button className="bg-blue-500 text-white p-2 m-2">More Info</button>
+        <div className="flex flex-row justify-start text-lg">
+          <button className="bg-netflixRed text-white p-3 px-4 rounded-md font-semibold flex justify-center items-center mr-4">
+            <FaPlay />
+            &nbsp;Play
+          </button>
+          <button className="bg-white text-black p-3 px-4 rounded-md font-semibold flex justify-center items-center ml-4">
+            <IoInformationCircleSharp />
+            &nbsp;More Information
+          </button>
         </div>
       </div>
       <h1>Dashboard</h1>

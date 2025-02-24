@@ -3,9 +3,21 @@ import { signOut } from "firebase/auth";
 import { auth } from "@/utils/Firebase";
 import useAuthListener from "@/utils/useAuthListener";
 import { useStore } from "@/utils/Store";
+import { IoIosSearch } from "react-icons/io";
+
+// import Image from "next/image";
+// import netflix-logo-icon.svg from ""
 // import { RxCrossCircled } from "react-icons/rx";
 {
-  /* <RxCrossCircled className="font-bold" /> &nbsp; */
+  /* <RxCrossCircled className="font-bold" /> &nbsp; 
+  <Image
+            src="/netflix-logo-icon.svg"
+            alt="Netflix Logo"
+            className="absolute "
+            width={60}
+            height={40}
+          />
+  */
 }
 
 export default function Header() {
@@ -36,10 +48,17 @@ export default function Header() {
       </div>
       {userName && (
         <div className="flex z-10">
-          <input type="text" placeholder="Search for movies" className="mr-6" />
+          <div>
+            <IoIosSearch />
+            <input
+              type="text"
+              placeholder="Search for movies"
+              className="mr-6"
+            />
+          </div>
           <button
             type="submit"
-            className="bg-netflixRed p-2 rounded-md font-semibold"
+            className="bg-netflixRed text-white p-2 rounded-md font-semibold justify-center items-center"
             onClick={handleSignOut}
           >
             Sign Out
