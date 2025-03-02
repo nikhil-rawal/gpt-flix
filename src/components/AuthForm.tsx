@@ -138,7 +138,7 @@ export default function AuthForm() {
 
   return (
     <div className="flex flex-col justify-center rounded-sm  bg-opacity-60 bg-black m-4 p-10">
-      {/* header */}
+      {/* header - signin/signup */}
       <header>
         <h1 className="text-white text-4xl font-bold mb-[24px]">
           {isSignin ? "Sign In" : "Sign Up"}

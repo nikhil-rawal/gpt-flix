@@ -126,7 +126,7 @@ export default function Dashboard() {
     <div className="mx-2 px-2">
       <div className="w-full aspect-video absolute top-0 left-0 -z-10">
         <iframe
-          className="w-full h-full @apply shadow-[0px_10px_15px_black_inset,0px_-10px_15px_black_inset] grayscale-25 contrast-125 brightness-90"
+          className="w-full h-full grayscale-25 contrast-125 brightness-90"
           src="https://www.youtube.com/embed/rUSdnuOLebE?autoplay=1&mute=1&modestbranding=1&showinfo=0&controls=0&rel=0&fs=0&loop=1"
           title="YouTube video player"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -152,9 +152,11 @@ export default function Dashboard() {
           </button>
         </div>
       </div>
-      <h1>Dashboard</h1>
-      <br />
-      <h1>Welcome {userName || "Guest"} !</h1>
+      <div className="flex flex-col justify-start mx-10 my-20">
+        <h1>Dashboard</h1>
+        <br />
+        <h1>Welcome {userName || "Guest"} !</h1>
+      </div>
     </div>
   );
 }

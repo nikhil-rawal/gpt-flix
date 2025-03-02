@@ -3,7 +3,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "@/utils/Firebase";
 import useAuthListener from "@/utils/useAuthListener";
 import { useStore } from "@/utils/Store";
-import { IoIosSearch } from "react-icons/io";
+// import { IoIosSearch } from "react-icons/io";
 
 // import Image from "next/image";
 // import netflix-logo-icon.svg from ""
@@ -48,14 +48,14 @@ export default function Header() {
       </div>
       {userName && (
         <div className="flex z-10">
-          <div>
+          {/* <div className="flex flex-row items-center justify-center">
             <IoIosSearch />
             <input
               type="text"
               placeholder="Search for movies"
-              className="mr-6"
+              className="mr-6 bg-transparent"
             />
-          </div>
+          </div> */}
           <button
             type="submit"
             className="bg-netflixRed text-white p-2 rounded-md font-semibold justify-center items-center"
