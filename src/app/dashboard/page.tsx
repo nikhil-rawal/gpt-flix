@@ -2,27 +2,29 @@
 import { useStore } from "@/utils/Store";
 import {
   nowPlayingMovies,
-  popularMovies,
-  topRatedMovies,
-  upcomingMovies,
-  trendingMovies,
+  // popularMovies,
+  // topRatedMovies,
+  // upcomingMovies,
+  // trendingMovies,
 } from "../tmdbResponse";
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import { FaPlay } from "react-icons/fa6";
 import { IoInformationCircleSharp } from "react-icons/io5";
 
 export default function Dashboard() {
   const userName = useStore((state) => state.userName);
-  useEffect(() => {
-    console.log(
-      nowPlayingMovies,
-      popularMovies,
-      topRatedMovies,
-      upcomingMovies,
-      trendingMovies,
-      nowPlayingMovies?.results[0]?.id
-    );
-  }, []);
+  const myMovie = nowPlayingMovies?.results[0];
+  console.log("My Movie", myMovie);
+  // useEffect(() => {
+  //   console.log(
+  //     nowPlayingMovies?.results?.map((movie) => movie)
+  // popularMovies,
+  // topRatedMovies,
+  // upcomingMovies,
+  // trendingMovies,
+  // nowPlayingMovies?.results[0]?.id
+  //   );
+  // }, []);
   // const videourl = `https://api.themoviedb.org/3/movie/${nowPlayingMovies.results[0].id}/videos?language=en-US`;
 
   // useEffect(() => {
@@ -153,9 +155,10 @@ export default function Dashboard() {
         </div>
       </div>
       <div className="flex flex-col justify-start mx-10 my-20">
+        <hr />
         <h1>Dashboard</h1>
         <br />
-        <h1>Welcome {userName || "Guest"} !</h1>
+        <h1>Welcome {userName} !</h1>
       </div>
     </div>
   );
