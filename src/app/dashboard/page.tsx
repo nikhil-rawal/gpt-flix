@@ -10,11 +10,29 @@ import {
 // import { useEffect } from "react";
 import { FaPlay } from "react-icons/fa6";
 import { IoInformationCircleSharp } from "react-icons/io5";
+import Image from "next/image";
 
 export default function Dashboard() {
   const userName = useStore((state) => state.userName);
   const myMovie = nowPlayingMovies?.results[0];
   console.log("My Movie", myMovie);
+  const userResponse = {
+    adult: false,
+    backdrop_path: "/9nhjGaFLKtddDPtPaX5EmKqsWdH.jpg",
+    genre_ids: [10749, 878, 53],
+    id: 950396,
+    original_language: "en",
+    original_title: "The Gorge",
+    overview:
+      "Two highly trained operatives grow close from a distance after being sent to guard opposite sides of a mysterious gorge. When an evil below emerges, they must work together to survive what lies within.",
+    popularity: 1495.874,
+    poster_path: "/7iMBZzVZtG0oBug4TfqDb9ZxAOa.jpg",
+    release_date: "2025-02-13",
+    title: "The Gorge",
+    video: false,
+    vote_average: 7.802,
+    vote_count: 1098,
+  };
   // useEffect(() => {
   //   console.log(
   //     nowPlayingMovies?.results?.map((movie) => movie)
@@ -155,7 +173,18 @@ export default function Dashboard() {
         </div>
       </div>
       <div className="flex flex-col justify-start mx-10 my-20">
-        <hr />
+        <div className="flex flex-row">
+          <hr />
+          <div className="flex flex-col">
+            <Image
+              src={`https://image.tmdb.org/t/p/w500${userResponse?.backdrop_path}`}
+              alt={`${userResponse?.title}'s backdrop`}
+              width={100}
+              height={60}
+            />
+            <h1>{userResponse?.title}</h1>
+          </div>
+        </div>
         <h1>Dashboard</h1>
         <br />
         <h1>Welcome {userName} !</h1>
